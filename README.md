@@ -3,7 +3,7 @@
 **[English](#english) · [中文](#中文)**
 
 > 离线优先的 Windows 英语训练桌面软件（Electron）。以 **听 · 说 · 读 · 写** 四路闭环训练为核心，
-> 配合 AI 动态出题与难度自适应，让单位时间的有效训练量达到课堂式学习的五倍以上。
+> 配合 AI 动态出题与难度自适应，**目标是让单位时间的有效训练量达到课堂式学习的五倍以上**。
 > 不填 API Key 也能用 —— 内置分层题库，断网可练。
 
 | | | |
@@ -151,7 +151,7 @@ npm run dist
 
 ## 📖 English Introduction
 
-**WordMaster is an offline-first English training desktop app for Windows**, built around a closed loop of four integrated drills — **Listen → Speak → Read → Write** — plus AI-generated content that adapts to your level in real time. The goal is a **"5× speed" training philosophy**: instead of signing up for courses or grinding through word lists, you do high-density, immediately-feedbacked, auto-scheduled practice every day, so receptive skills (listening/reading) and productive skills (speaking/writing) happen at the same time.
+**WordMaster is an offline-first English training desktop app for Windows**, built around a closed loop of four integrated drills — **Listen → Speak → Read → Write** — plus AI-generated content that adapts to your level in real time. The aim is a **"5× speed" training philosophy**: instead of signing up for courses or grinding through word lists, you do high-density, immediately-feedbacked, auto-scheduled practice every day, so receptive skills (listening/reading) and productive skills (speaking/writing) happen at the same time — with the goal of getting five times more effective practice per hour than classroom-style study.
 
 - **Works without any API key**: a built-in six-level question bank (primary school → IELTS/TOEFL) works fully offline. Add a key and the AI generates passages, sentences and articles matched to your difficulty — and if generation fails it silently falls back to the built-in bank, so **there is always something to practise**.
 - **Every module self-adapts**: hit "too hard, make it simpler" / "too easy, step it up" and new material is pushed at the new difficulty immediately; the level dropdown also switches between primary / middle / high school / university / CET-6 / IELTS-TOEFL in one click.
