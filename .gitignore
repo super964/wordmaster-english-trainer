@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+
+# Local staging copy of the upload set (now redundant)
+_github_upload/
+
+# added by github-publish skill
+*.tmp
+*.swp
+.idea/
+.vscode/
+*.bak
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.ppk
+*.keystore
+*.jks
+*.asc
+*.gpg
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+credentials.json
+.npmrc
+.pypirc
+.netrc
+.htpasswd
+firebase-adminsdk*.json
+service-account*.json
+secrets.json
+*.secret
+*.secrets
+.npm/
+.yarn/
+.pnp.*
+build/
+coverage/
+.next/
+.nuxt/
+*.tsbuildinfo
+.env.local

@@ -1,0 +1,90 @@
+'use strict';
+/* ================= 字母 & 音标内置数据（离线兜底；AI 可生成更多并覆盖） ================= */
+window.PHONICS_DATA = {
+
+  /* ----------------26 个字母：发音示范词 + 各 10 个练习词 ---------------- */
+  letters: [
+    { key: 'A', ipa: '/eɪ/', demo: 'age', words: 'apple苹果,ant蚂蚁,age年龄,actor演员,away离开,autumn秋天,airport机场,animal动物,argue争论,amazing惊人的' },
+    { key: 'B', ipa: '/biː/', demo: 'be', words: 'book书,baby婴儿,bird鸟,breakfast早餐,beautiful美丽的,busy忙的,borrow借,battle战斗,barber理发师,bingo必应' },
+    { key: 'C', ipa: '/siː/', demo: 'see', words: 'cat猫,call打电话,care小心,cinema电影院,clever聪明的,cloud云,color颜色,cousin表亲,culture文化,cabbage卷心菜' },
+    { key: 'D', ipa: '/diː/', demo: 'day', words: 'dog狗,dance跳舞,dinner晚餐,doctor医生,daughter女儿,decide决定,delicious美味的,different不同的,dragon龙,dumpling饺子' },
+    { key: 'E', ipa: '/iː/', demo: 'eat', words: 'egg鸡蛋,eight八,eagle鹰,early早的,empty空的,energy精力,engine引擎,enjoy享受,evening傍晚,everything一切' },
+    { key: 'F', ipa: '/ef/', demo: 'off', words: 'fish鱼,family家庭,friend朋友,flower花,finish完成,famous著名的,future未来,February二月,fountain喷泉,fluffy毛茸茸的' },
+    { key: 'G', ipa: '/dʒiː/', demo: 'jeep', words: 'girl女孩,good好的,green绿色,grandma奶奶,guitar吉他,guess猜测,guilty内疚的,gym体育馆,giraffe长颈鹿,ghost鬼' },
+    { key: 'H', ipa: '/eɪtʃ/', demo: 'age', words: 'hand手,head头,health健康,heart心,help帮助,history历史,holiday假期,honest诚实的,horizon地平线,humidity湿度' },
+    { key: 'I', ipa: '/aɪ/', demo: 'ice', words: 'ice冰,idea主意,ink墨水,island岛,important重要的,increase增加,invite邀请,invent发明,imagine想象,inch英寸' },
+    { key: 'J', ipa: '/dʒeɪ/', demo: 'jay', words: 'juice果汁,job工作,jacket夹克,january一月,journey旅行,jealous嫉妒的,jungle丛林,jazz爵士,jigsaw拼图,jog慢跑' },
+    { key: 'K', ipa: '/keɪ/', demo: 'cake', words: 'key钥匙,king国王,kitchen厨房,kite风筝,knowledge知识,koala考拉,kind善良的,knock敲,keyboard键盘,ketchup番茄酱' },
+    { key: 'L', ipa: '/el/', demo: 'bell', words: 'leg腿,like喜欢,love爱,learn学习,letter信,lemon柠檬,library图书馆,little小的,lively活泼的,lantern灯笼' },
+    { key: 'M', ipa: '/em/', demo: 'am', words: 'man男人,milk牛奶,morning早上,mouse老鼠,music音乐,make制作,month月份,magical神奇的,mountain山,mushroom蘑菇' },
+    { key: 'N', ipa: '/en/', demo: 'pen', words: 'name名字,nose鼻子,nice好看的,nine九,night夜晚,noodle面条,noise噪音,nature自然,nephew侄子,naughty淘气的' },
+    { key: 'O', ipa: '/əʊ/', demo: 'oh', words: 'orange橙子,ocean海洋,octopus章鱼,office办公室,often经常,onion洋葱,olympic奥运的,onboard在船上,opera歌剧,ostrich鸵鸟' },
+    { key: 'P', ipa: '/piː/', demo: 'pea', words: 'pen钢笔,panda熊猫,pizza披萨,person人,place地方,party聚会,present礼物,power力量,playground操场,pyjamas睡衣' },
+    { key: 'Q', ipa: '/kjuː/', demo: 'cue', words: 'queen女王,question问题,quiet安静的,quick快的,quiz测验,queue排队,quilt被子,quite相当,quarter一刻钟,quiz小测验' },
+    { key: 'R', ipa: '/ɑːr/', demo: 'car', words: 'rain雨,read读,red红色,room房间,river河流,robot机器人,round圆的,rubber橡皮,rainbow彩虹,restaurant餐馆' },
+    { key: 'S', ipa: '/es/', demo: 'yes', words: 'sun太阳,school学校,small小的,sister姐妹,story故事,sweet甜的,summer夏天,science科学,squirrel松鼠,sphinx狮身人面像' },
+    { key: 'T', ipa: '/tiː/', demo: 'tea', words: 'tea茶,table桌子,tiger老虎,teacher老师,travel旅行,today今天,together一起,tonight今晚,tomorrow明天,tennis网球' },
+    { key: 'U', ipa: '/juː/', demo: 'you', words: 'use使用,under在下面,umbrella雨伞,uncle叔叔,uniform制服,universe宇宙,unique独特的,upstairs在楼上,understand理解,usually通常' },
+    { key: 'V', ipa: '/viː/', demo: 'vee', words: 'van厢式车,very非常,vegetable蔬菜,video视频,village村庄,violin小提琴,visit拜访,voice嗓音,volcano火山,vacation假期' },
+    { key: 'W', ipa: '/ˈdʌbljuː/', demo: 'double', words: 'water水,window窗户,woman女人,worker工人,weather天气,weekend周末,without没有,wonder想知道,whale鲸鱼,whisper耳语' },
+    { key: 'X', ipa: '/eks/', demo: 'eggs', words: 'box盒子,x-ray X光片,fox狐狸,six六,mix混合,taxi出租车,exit出口,extra额外的,exam考试,ox公牛' },
+    { key: 'Y', ipa: '/waɪ/', demo: 'why', words: 'yellow黄色,yes是的,you你,young年轻的,yesterday昨天,yogurt酸奶,yo-yo悠悠球,yacht游艇,yawn打哈欠,yeast酵母' },
+    { key: 'Z', ipa: '/zed/', demo: 'zed', words: 'zoo动物园,zebra斑马,zero零,size尺寸,zone区域,zip拉链,zoom缩放,quiz测验,buzz嗡嗡,fizz嘶嘶声' }
+  ],
+
+  /* ---------------- 元音音标（12 单元音 +8 双元音 =20） ---------------- */
+  vowels: [
+    { key: 'iː', demo: 'see', tip: '长衣音', words: 'see看见,tea茶,green绿色的,sheep绵羊,tree树,three三,sweet甜的,cheese奶酪,people人们,field田地' },
+    { key: 'ɪ', demo: 'sit', tip: '短衣音', words: 'sit坐,big大的,pig猪,milk牛奶,ship船,hill小山,six六,windy有风的,money钱,happy开心的' },
+    { key: 'e', demo: 'bed', tip: '小鹅音', words: 'bed床,red红色的,pen钢笔,ten十,head头,egg鸡蛋,bread面包,friend朋友,weather天气,better更好的' },
+    { key: 'æ', demo: 'cat', tip: '大嘴音', words: 'cat猫,bag包,hand手,happy开心的,family家庭,black黑色的,man男人,map地图,stand站立,animal动物' },
+    { key: 'ɑː', demo: 'car', tip: '长啊音', words: 'car小汽车,park公园,glass玻璃,father父亲,class班级,half一半,calm镇定的,arm手臂,fast快的,dance跳舞' },
+    { key: 'ɒ', demo: 'dog', tip: '短 o 音', words: 'dog狗,box盒子,hot热的,shop商店,clock钟,sock袜子,rock岩石,colour颜色,holiday假期,quality质量' },
+    { key: 'ɔː', demo: 'door', tip: '长 o 音', words: 'door门,floor地板,four四,your你的,call打电话,small小的,talk说话,walk走路,water水,board木板' },
+    { key: 'ʊ', demo: 'book', tip: '短乌音', words: 'book书,good好的,foot脚,cook做饭,put放,woman女人,would将会,full满的,sugar糖,look看' },
+    { key: 'uː', demo: 'blue', tip: '长乌音', words: 'blue蓝色的,food食物,school学校,moon月亮,zoo动物园,juice果汁,cool酷的,room房间,fruit水果,noodle面条' },
+    { key: 'ʌ', demo: 'cup', tip: '短阿音', words: 'cup杯子,bus公共汽车,sun太阳,much很多,colour颜色,love爱,money钱,young年轻的,other其他的,country国家' },
+    { key: 'ɜː', demo: 'bird', tip: '长鹅音', words: 'bird鸟,girl女孩,work工作,word单词,nurse护士,first第一,turn转动,her她的,shirt衬衫,early早的' },
+    { key: 'ə', demo: 'about', tip: '弱读音（最常见）', words: 'about关于,sofa沙发,banana香蕉,system系统,holiday假期,today今天,problem问题,away离开,alive活着的,accept接受' },
+    { key: 'eɪ', demo: 'cake', tip: '双元音·A', words: 'cake蛋糕,name名字,day天,play玩,make做,lake湖,great很棒,rain雨,they他们,table桌子' },
+    { key: 'aɪ', demo: 'bike', tip: '双元音·I', words: 'bike自行车,nine九,time时间,like喜欢,my我的,fly飞,sky天空,ice冰,idea主意,white白色的' },
+    { key: 'ɔɪ', demo: 'boy', tip: '双元音·OI', words: 'boy男孩,toy玩具,enjoy享受,noise噪音,voice声音,oil油,coin硬币,join加入,point点,soil土壤' },
+    { key: 'əʊ', demo: 'home', tip: '双元音·O', words: 'home家,go去,phone电话,open打开,old老的,snow雪,boat小船,coat外套,show展示,shoulder肩膀' },
+    { key: 'aʊ', demo: 'house', tip: '双元音·OU', words: 'house房子,out外出,how怎样,now现在,mouse老鼠,cloud云,loud大声的,about关于,flower花,brown棕色的' },
+    { key: 'ɪə', demo: 'here', tip: '双元音·AIR(美式常并入)', words: 'here这里,near近的,ear耳朵,hear听见,idea主意,deer鹿,beer啤酒,museum博物馆,serious严肃的,sincere真诚的' },
+    { key: 'eə', demo: 'hair', tip: '双元音·AIR', words: 'hair头发,there那里,where哪里,bear熊,care小心,share分享,air空气,chair椅子,square广场,parent父母' },
+    { key: 'ʊə', demo: 'tour', tip: '双元音·OR', words: 'tour旅游,sure确定的,poor穷的,pure纯的,cure治愈,during在…期间,tourist游客,detour绕路,obscure模糊的,moor荒野' }
+  ],
+
+  /* ---------------- 辅音音标（24 清浊成对 +4 =28） ---------------- */
+  consonants: [
+    { key: 'p', demo: 'pen', tip: '清双唇爆破', words: 'pen钢笔,map地图,apple苹果,happy开心的,people人们,please请,paper纸,play玩,sleep睡觉,stop停止' },
+    { key: 'b', demo: 'book', tip: '浊双唇爆破', words: 'book书,big大的,blue蓝色的,bike自行车,bird鸟,bag包,bank银行,box盒子,table桌子,job工作' },
+    { key: 't', demo: 'time', tip: '清齿龈爆破', words: 'time时间,ten十,table桌子,tiger老虎,take拿,water水,city城市,put放,meet遇见,start开始' },
+    { key: 'd', demo: 'dog', tip: '浊齿龈爆破', words: 'dog狗,day天,desk书桌,do做,down下,door门,red红色的,food食物,made制造,card卡片' },
+    { key: 'k', demo: 'cat', tip: '清软腭爆破', words: 'cat猫,cup杯子,car小汽车,come来,cake蛋糕,school学校,book书,look看,milk牛奶,black黑色的' },
+    { key: 'g', demo: 'go', tip: '浊软腭爆破', words: 'go去,good好的,green绿色的,grape葡萄,big大的,egg鸡蛋,give给,gate大门,garden花园,long长的' },
+    { key: 'f', demo: 'fish', tip: '清唇齿擦音', words: 'fish鱼,family家庭,food食物,fruit水果,flower花,leaf树叶,off离开,coffee咖啡,photo照片,knife刀' },
+    { key: 'v', demo: 'van', tip: '浊唇齿擦音', words: 'van货车,very非常,visit拜访,voice声音,video视频,verb动词,love爱,five五,over在上方,clever聪明的' },
+    { key: 'θ', demo: 'think', tip: '咬舌清擦音', words: 'think认为,three三,thank谢谢,thick厚的,thin薄的,path小路,month月份,math数学,birthday生日,nothing没有什么' },
+    { key: 'ð', demo: 'this', tip: '咬舌浊擦音', words: 'this这个,that那个,the这,they他们,there那里,their他们的,mother妈妈,father爸爸,brother兄弟,with和' },
+    { key: 's', demo: 'see', tip: '清齿龈擦音', words: 'see看见,sun太阳,school学校,small小的,sister姐妹,city城市,pencil铅笔,nice好的,rice米饭,place地方' },
+    { key: 'z', demo: 'zoo', tip: '浊齿龈擦音', words: 'zoo动物园,zero零,size尺寸,busy忙的,easy容易的,music音乐,cheese奶酪,please请,nose鼻子,raise提高' },
+    { key: 'ʃ', demo: 'she', tip: '清唏擦音（sh）', words: 'she她,ship船,shop商店,shirt衬衫,fish鱼,English英语,sure确定,sugar糖,short短的,wash洗' },
+    { key: 'ʒ', demo: 'vision', tip: '浊唏擦音', words: 'vision视力,pleasure愉快,measure测量,garage车库,massage按摩,television电视,unusual不寻常的,beige米色的,mirage海市蜃楼,collision碰撞' },
+    { key: 'h', demo: 'he', tip: '清喉擦音', words: 'he他,house房子,hello你好,happy开心的,help帮助,her她的,history历史,hurry赶紧,hotel酒店,hand手' },
+    { key: 'tʃ', demo: 'chair', tip: '清破擦音（ch）', words: 'chair椅子,China中国,teacher老师,chicken鸡肉,watch手表,lunch午餐,much很多,rich富的,touch触摸,nature自然' },
+    { key: 'dʒ', demo: 'juice', tip: '浊破擦音（j）', words: 'juice果汁,job工作,jacket夹克,jump跳,orange橙子,page一页,large大的,village村庄,subject学科,change改变' },
+    { key: 'tr', demo: 'tree', tip: '清破擦组合', words: 'tree树,train火车,travel旅行,trip旅行,trick把戏,truck卡车,true真的,country国家,strange奇怪的,stripe条纹' },
+    { key: 'dr', demo: 'dress', tip: '浊破擦组合', words: 'dress连衣裙,drink喝,drive驾驶,dry干的,drug药,drum鼓,drag拖,dream梦想,drill钻,hundred一百' },
+    { key: 'ts', demo: 'cats', tip: '清复数尾音', words: 'cats猫(复),hats帽子(复),students学生(复),shirts衬衫(复),gates大门(复),boats船(复),lots许多,its它的,meets遇见(三单),starts开始(三单)' },
+    { key: 'dz', demo: 'hands', tip: '浊复数尾音', words: 'hands手(复),birds鸟(复),words单词(复),friends朋友(复),stands站立(三单),sends寄送(三单),needs需要(三单),beds床(复),roads路(复),sounds听起来(三单)' },
+    { key: 'm', demo: 'man', tip: '双唇鼻音', words: 'man男人,make做,milk牛奶,moon月亮,mother妈妈,music音乐,name名字,time时间,small小的,room房间' },
+    { key: 'n', demo: 'name', tip: '齿龈鼻音', words: 'name名字,nice好的,new新的,no不,nose鼻子,nine九,know知道,snow雪,run跑,pen钢笔' },
+    { key: 'ŋ', demo: 'sing', tip: '软腭鼻音（ng）', words: 'sing唱歌,song歌曲,long长的,strong强壮的,morning早上,young年轻的,thing东西,bring带来,king国王,ping-pong乒乓球' },
+    { key: 'l', demo: 'look', tip: '边音（l）', words: 'look看,like喜欢,leg腿,lion狮子,long长的,love爱,milk牛奶,apple苹果,people人们,table桌子' },
+    { key: 'r', demo: 'red', tip: '卷舌近音', words: 'red红色,run跑,rain雨,read读,right对的,room房间,ruler尺子,rice米饭,round圆的,write写' },
+    { key: 'w', demo: 'we', tip: '圆唇半元音', words: 'we我们,water水,window窗户,work工作,white白色的,wall墙,welcome欢迎,question问题,sweet甜的,wear穿' },
+    { key: 'j', demo: 'yes', tip: '硬腭半元音', words: 'yes是的,yellow黄色,year年,you你,your你的,youth青年,union联盟,new新的,news新闻,beautiful美丽的' }
+  ]
+};

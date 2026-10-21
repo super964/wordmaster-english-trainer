@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: data:; font-src 'self' data:; connect-src *">
+  <title>WordMaster · 英语听说读写 AI 训练</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ 侧边导航 ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">W</div>
+      <div class="brand-text">
+        <div class="brand-name">WordMaster</div>
+        <div class="brand-sub">英语听说读写训练</div>
+      </div>
+    </div>
+    <div class="side-dict">
+      <input type="text" id="side-dict-search" placeholder="📖 词典：输入单词回车" spellcheck="false" autocomplete="off">
+    </div>
+    <nav class="nav">
+      <button class="nav-item active" data-page="listen">
+        <span class="nav-ico">🎧</span><span class="nav-label">听 · Listen</span>
+      </button>
+      <button class="nav-item" data-page="speak">
+        <span class="nav-ico">🎤</span><span class="nav-label">说 · Speak</span>
+      </button>
+      <button class="nav-item" data-page="read">
+        <span class="nav-ico">📖</span><span class="nav-label">读 · Read</span>
+      </button>
+      <button class="nav-item" data-page="write">
+        <span class="nav-ico">⌨️</span><span class="nav-label">写 · Write</span>
+      </button>
+      <button class="nav-item" data-page="phonics">
+        <span class="nav-ico">🔤</span><span class="nav-label">字母音标 · Aa</span>
+      </button>
+      <button class="nav-item" data-page="dashboard">
+        <span class="nav-ico">📈</span><span class="nav-label">总记录 · Stats</span>
+      </button>
+      <button class="nav-item" data-page="library">
+        <span class="nav-ico">📚</span><span class="nav-label">学习库 · Library</span>
+      </button>
+      <button class="nav-item" data-page="vocab">
+        <span class="nav-ico">⭐</span><span class="nav-label">单词本 · Words</span>
+        <span class="nav-badge hidden" id="nav-vocab-badge">0</span>
+      </button>
+      <button class="nav-item" data-page="dict">
+        <span class="nav-ico">📖</span><span class="nav-label">词典 · Dict</span>
+      </button>
+      <button class="nav-item" data-page="settings">
+        <span class="nav-ico">⚙️</span><span class="nav-label">设置 · Settings</span>
+      </button>
+    </nav>
+    <div class="side-foot">
+      <button class="theme-toggle" id="theme-toggle" title="切换深色 / 浅色模式">
+        <span class="theme-ico">🌙</span><span class="theme-text">深色模式</span>
+      </button>
+      <div class="side-mode" id="side-mode">内置素材模式</div>
+      <div class="side-level" id="side-level">当前：初中</div>
+    </div>
+  </aside>
+
+  <!-- ============ 主内容区 ============ -->
+  <main class="main">
+
+    <!-- ---------- 听 ---------- -->
+    <section id="page-listen" class="page active">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="ph-left">
+            <h2>听力训练</h2>
+            <span class="chip chip-level" id="listen-level-chip">初中</span>
+            <span class="chip" id="listen-source-chip">内置素材</span>
+          </div>
+          <div class="ph-right">
+            <label class="ctl">难度
+              <select class="preset-select" id="listen-preset">
+                <option value="22">🎯 小学</option>
+                <option value="37" selected>🎯 初中</option>
+                <option value="52">🎯 高中</option>
+                <option value="67">🎯 大学</option>
+                <option value="81">🎯 六级</option>
+                <option value="94">🎯 考研/雅思</option>
+              </select>
+            </label>
+            <label class="ctl">语速
+              <input type="range" id="listen-rate" min="0.5" max="3" step="0.05" value="0.9">
+              <span class="ctl-val" id="listen-rate-val">0.90x</span>
+            </label>
+            <label class="ctl">每段循环
+              <select id="listen-repeat">
+                <option value="1">1 遍</option>
+                <option value="2">2 遍</option>
+                <option value="3" selected>3 遍</option>
+                <option value="0">连续循环</option>
+              </select>
+            </label>
+            <label class="ctl switch"><input type="checkbox" id="listen-auto" checked><span></span>连播</label>
+            <button class="btn" id="listen-fetch">🔄 换一批文段</button>
+          </div>
+        </div>
+
+        <div class="listen-grid">
+          <aside class="seg-list-wrap">
+            <div class="side-title">文段列表 <span id="listen-list-meta"></span></div>
+            <ul class="seg-list" id="listen-list"></ul>
+            <div class="loading hidden" id="listen-loading"><div class="spinner"></div><span>AI 正在生成文段…</span></div>
+          </aside>
+
+          <div class="stage">
+            <div class="seg-en" id="listen-en">点击右上角「换一批文段」开始训练</div>
+            <div class="seg-zh hidden" id="listen-zh"></div>
+            <div class="play-state" id="listen-state">待播放</div>
+
+            <div class="controls">
+              <button class="btn ghost" id="listen-prev">⏮ 上一段</button>
+              <button class="btn primary big" id="listen-play">▶ 播放</button>
+              <button class="btn ghost" id="listen-next">下一段 ⏭</button>
+              <button class="btn ghost" id="listen-toggle-zh">显示译文</button>
+              <button class="btn ghost" id="listen-toggle-en">隐藏原文</button>
+              <button class="btn ghost" id="listen-copy">📋 复制</button>
+            </div>
+
+            <div class="feedback-row">
+              <span class="fb-label">这段怎么样？</span>
+              <button class="btn hard" id="listen-hard">😓 太难了，简单点</button>
+              <button class="btn done" id="listen-master">✅ 听熟了，下一段</button>
+              <button class="btn easy" id="listen-easy">🚀 太简单，难一点</button>
+            </div>
+            <div class="hint">反馈后会立刻按新难度重新推送文段 · <b>双击英文里的单词可一键收藏到生词本（自动翻译释义）</b></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 说 ---------- -->
+    <section id="page-speak" class="page">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="ph-left">
+            <h2>口语跟读</h2>
+            <span class="chip chip-level" id="speak-level-chip">初中</span>
+            <span class="chip" id="speak-progress-chip">第 0 / 0 句</span>
+          </div>
+          <div class="ph-right">
+            <label class="ctl">难度
+              <select class="preset-select" id="speak-preset">
+                <option value="22">🎯 小学</option>
+                <option value="37" selected>🎯 初中</option>
+                <option value="52">🎯 高中</option>
+                <option value="67">🎯 大学</option>
+                <option value="81">🎯 六级</option>
+                <option value="94">🎯 考研/雅思</option>
+              </select>
+            </label>
+            <label class="ctl">语速
+              <input type="range" id="speak-rate" min="0.5" max="3" step="0.05" value="0.9">
+              <span class="ctl-val" id="speak-rate-val">0.90x</span>
+            </label>
+            <button class="btn" id="speak-fetch">🔄 换一批句子</button>
+          </div>
+        </div>
+
+        <div class="speak-grid">
+          <div class="stage">
+            <div class="speak-en" id="speak-en">点击「换一批句子」开始跟读</div>
+            <div class="speak-zh hidden" id="speak-zh"></div>
+
+            <div class="controls">
+              <button class="btn primary" id="speak-play">🔊 朗读示范</button>
+              <button class="btn ghost" id="speak-play-slow">🐢 慢速示范</button>
+              <button class="btn ghost" id="speak-toggle-zh">显示译文</button>
+              <button class="btn ghost" id="speak-next">下一句 ⏭</button>
+              <button class="btn ghost" id="speak-copy">📋 复制</button>
+            </div>
+
+            <div class="record-row">
+              <button class="btn record" id="speak-shadow">🎤 跟读（先听后读）</button>
+              <button class="btn record2" id="speak-record">⏺ 自由录音读</button>
+              <button class="btn danger hidden" id="speak-stop">⏹ 完成录音</button>
+            </div>
+
+            <div class="record-status" id="speak-status">准备就绪</div>
+            <div class="wave-wrap hidden" id="speak-wave-wrap">
+              <canvas id="speak-wave" width="720" height="72"></canvas>
+            </div>
+            <div class="counters" id="speak-counters"></div>
+            <div class="hint">💡 双击句子里的单词可一键收藏到生词本（自动翻译释义）</div>
+          </div>
+
+          <aside class="rec-list-wrap">
+            <div class="side-title">我的录音</div>
+            <ul class="rec-list" id="speak-recs"><li class="empty">还没有录音，点左边开始</li></ul>
+            <div class="rec-note">录音仅保存在本次会话中，可反复回放对比</div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 读 ---------- -->
+    <section id="page-read" class="page">
+      <div class="panel read-panel">
+        <div class="panel-head">
+          <div class="ph-left">
+            <h2>阅读训练</h2>
+            <span class="chip chip-level" id="read-level-chip">初中</span>
+            <span class="chip" id="read-source-chip">内置素材</span>
+          </div>
+          <div class="ph-right">
+            <label class="ctl">难度
+              <select class="preset-select" id="read-preset">
+                <option value="22">🎯 小学</option>
+                <option value="37" selected>🎯 初中</option>
+                <option value="52">🎯 高中</option>
+                <option value="67">🎯 大学</option>
+                <option value="81">🎯 六级</option>
+                <option value="94">🎯 考研/雅思</option>
+              </select>
+            </label>
+            <label class="ctl">字号
+              <button class="btn tiny" id="read-font-minus">A−</button>
+              <span class="ctl-val" id="read-font-val">19px</span>
+              <button class="btn tiny" id="read-font-plus">A+</button>
+            </label>
+            <button class="btn" id="read-toggle-zh">🈶 显示译文</button>
+            <button class="btn" id="read-copy">📋 复制</button>
+            <button class="btn" id="read-fetch">🔄 换一篇新文章</button>
+          </div>
+        </div>
+
+        <div class="read-scroll" id="read-scroll">
+          <div class="read-progress"><div id="read-progress-bar"></div></div>
+          <article class="reading" id="read-article">
+            <div class="read-level-tag" id="read-level-tag"></div>
+            <h1 id="read-title">点击「换一篇新文章」开始阅读</h1>
+            <div class="read-meta" id="read-meta"></div>
+            <div class="read-body" id="read-body"></div>
+          </article>
+        </div>
+
+        <div class="read-footer">
+          <div class="read-timer"><span id="read-timer">本次阅读 00:00</span><span class="hint" style="margin-left:12px">💡 双击文中单词可收藏生词</span></div>
+          <div class="feedback-row">
+            <button class="btn hard" id="read-hard">😓 这篇太难了</button>
+            <button class="btn done" id="read-done">✅ 读完了</button>
+            <button class="btn easy" id="read-easy">🚀 这篇太简单</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 写 ---------- -->
+    <section id="page-write" class="page">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="ph-left">
+            <h2>打字抄写</h2>
+            <span class="chip chip-level" id="write-level-chip">初中</span>
+            <span class="chip" id="write-progress-chip">第 0 / 0 句</span>
+          </div>
+          <div class="ph-right">
+            <label class="ctl">难度
+              <select class="preset-select" id="write-preset">
+                <option value="22">🎯 小学</option>
+                <option value="37" selected>🎯 初中</option>
+                <option value="52">🎯 高中</option>
+                <option value="67">🎯 大学</option>
+                <option value="81">🎯 六级</option>
+                <option value="94">🎯 考研/雅思</option>
+              </select>
+            </label>
+            <button class="btn" id="write-fetch">🔄 换一批句子</button>
+          </div>
+        </div>
+
+        <div class="write-grid">
+          <div class="stage">
+            <div class="prompt-en" id="write-prompt-en">点击「换一批句子」开始打字练习</div>
+            <div class="prompt-tools">
+              <button class="btn ghost tiny" id="write-toggle-zh">显示译文</button>
+              <button class="btn ghost tiny" id="write-speak">🔊 朗读</button>
+              <button class="btn ghost tiny" id="write-copy">📋 复制</button>
+            </div>
+            <div class="prompt-zh hidden" id="write-prompt-zh"></div>
+
+            <textarea id="write-input" placeholder="请照着上面的英文输入…" spellcheck="false" autocomplete="off"></textarea>
+            <div class="write-meta">
+              <span id="write-count">0 字符</span>
+              <span id="write-accuracy"></span>
+            </div>
+            <div class="controls">
+              <button class="btn primary" id="write-submit">提交 ✅</button>
+              <button class="btn ghost" id="write-skip">跳过</button>
+              <button class="btn ghost" id="write-next">下一句 ⏭</button>
+            </div>
+
+            <div class="write-result hidden" id="write-result"></div>
+            <div class="hint">💡 双击上方英文里的单词可一键收藏到生词本（自动翻译释义）</div>
+          </div>
+
+          <aside class="today-box">
+            <div class="side-title">今日写作</div>
+            <div class="mini-stat"><div class="big-num" id="write-today-chars">0</div><div class="unit">累计打字（字符）</div></div>
+            <div class="mini-stat"><div class="big-num" id="write-today-count">0</div><div class="unit">完成篇数</div></div>
+            <div class="mini-stat"><div class="big-num" id="write-today-acc">—</div><div class="unit">平均准确率</div></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 总记录 ---------- -->
+    <section id="page-dashboard" class="page">
+      <div class="stat-cards" id="dash-cards"></div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div class="ph-left"><h2>近 30 天训练曲线</h2></div>
+          <div class="ph-right seg-toggle" id="dash-metric-toggle">
+            <button data-metric="min" class="active">时长(分钟)</button>
+            <button data-metric="count">次数</button>
+            <button data-metric="units">词 / 字数</button>
+          </div>
+        </div>
+        <div class="chart-legend" id="dash-legend"></div>
+        <div class="chart-wrap"><canvas id="dash-chart" height="280"></canvas></div>
+      </div>
+
+      <div class="dash-two">
+        <div class="panel">
+          <div class="panel-head"><div class="ph-left"><h2>难度成长曲线</h2></div></div>
+          <div class="chart-legend" id="dash-diff-legend"></div>
+          <div class="chart-wrap small"><canvas id="dash-diff-chart" height="220"></canvas></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="ph-left"><h2>今日训练分布</h2></div></div>
+          <div class="chart-wrap small"><canvas id="dash-today-chart" height="220"></canvas></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div class="ph-left"><h2>训练明细（最近 30 条）</h2></div>
+          <div class="ph-right">
+            <button class="btn ghost" id="dash-export-csv">导出 CSV</button>
+          </div>
+        </div>
+        <table class="rec-table">
+          <thead><tr><th>时间</th><th>模块</th><th>动作</th><th>时长</th><th>数量</th><th>难度</th></tr></thead>
+          <tbody id="dash-table"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------- 学习库 ---------- -->
+    <section id="page-library" class="page">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="ph-left">
+            <h2>📚 学习库</h2>
+            <span class="chip" id="lib-counts"></span>
+          </div>
+          <div class="ph-right">
+            <div class="seg-toggle" id="lib-filter">
+              <button data-skill="all" class="active">全部</button>
+              <button data-skill="listen">听</button>
+              <button data-skill="speak">说</button>
+              <button data-skill="read">读</button>
+              <button data-skill="write">写</button>
+            </div>
+            <select id="lib-level" class="mini-select">
+              <option value="all">全部难度</option>
+              <option value="0">小学低年级</option>
+              <option value="1">小学高年级</option>
+              <option value="2">初中</option>
+              <option value="3">高中</option>
+              <option value="4">大学四级</option>
+              <option value="5">大学六级</option>
+              <option value="6">考研留学</option>
+            </select>
+            <input type="search" id="lib-search" class="mini-search" placeholder="🔍 搜索学过的英文 / 中文 / 标题…">
+            <button class="btn" id="lib-export-txt">导出 TXT</button>
+            <button class="btn" id="lib-export-json">导出 JSON</button>
+          </div>
+        </div>
+        <div class="lib-list" id="lib-list"></div>
+      </div>
+    </section>
+
+    <!-- ---------- 单词本 ---------- -->
+    <section id="page-vocab" class="page">
+      <div class="stat-cards" id="vocab-cards"></div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div class="ph-left">
+            <h2>🔁 今日复习（艾宾浩斯遗忘曲线）</h2>
+            <span class="chip" id="vocab-counts"></span>
+          </div>
+          <div class="ph-right">
+            <button class="btn primary" id="vocab-start-review">开始复习</button>
+            <button class="btn" id="vocab-add">➕ 手动添加生词</button>
+            <button class="btn" id="vocab-export-csv">导出 CSV</button>
+            <input type="search" id="vocab-search" class="mini-search" placeholder="🔍 搜索单词 / 释义 / 原句…">
+          </div>
+        </div>
+
+        <div class="upcoming-strip" id="vocab-upcoming"></div>
+        <div class="review-wrap" id="vocab-review-box"></div>
+
+        <div class="seg-toggle vocab-seg" id="vocab-filter">
+          <button data-f="all" class="active">全部</button>
+          <button data-f="due">⏰ 待复习</button>
+          <button data-f="learning">📖 记忆中</button>
+          <button data-f="mastered">🏆 已掌握</button>
+        </div>
+        <div class="lib-list" id="vocab-list"></div>
+      </div>
+    </section>
+
+    <!-- ---------- 字母音标（零基础） ---------- -->
+    <section id="page-phonics" class="page">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="ph-left">
+            <h2>🔤 字母与音标 · 零基础入门</h2>
+            <div class="seg-toggle" id="phonics-tabs">
+              <button data-tab="letters" class="active">26 个字母</button>
+              <button data-tab="vowels">元音音标 (20)</button>
+              <button data-tab="consonants">辅音音标 (28)</button>
+            </div>
+          </div>
+          <div class="ph-right">
+            <button class="btn" id="phonics-speak-all">▶ 连读整组</button>
+            <button class="btn danger hidden" id="phonics-stop">⏹ 停止</button>
+            <button class="btn primary" id="phonics-gen">🤖 AI 生成全部例词</button>
+          </div>
+        </div>
+        <div class="hint">
+          点「🔊 发音」听字母名 / 音标示范词；点单词朗读；点 ⭐ 把例词收进生词本。
+          AI 生成的例词会<b>永久保存</b>，下次打开不用重新生成（无网络时用内置例词）。
+        </div>
+        <div class="phonics-grid" id="phonics-grid"></div>
+      </div>
+    </section>
+
+    <!-- ---------- 词典 ---------- -->
+    <section id="page-dict" class="page">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="ph-left">
+            <h2>📖 词典 · 免费在线查词</h2>
+            <span class="chip">Free Dictionary API · 无需配置</span>
+          </div>
+          <div class="ph-right">
+            <input type="search" id="dict-search" class="mini-search" placeholder="🔍 输入英文单词，如 apple" style="min-width:230px">
+            <button class="btn primary" id="dict-go">查词</button>
+          </div>
+        </div>
+        <div id="dict-history" class="dict-history"></div>
+        <div id="dict-entry"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div class="ph-left">
+            <h2>串记词表 · 按主题或含义一次学一串</h2>
+            <span class="chip" id="dict-list-src"></span>
+          </div>
+          <div class="ph-right">
+            <input type="text" id="dict-meaning-input" class="mini-search" placeholder="按中文含义搜：如 开心 / 表示惊讶 / 快速移动" style="min-width:250px">
+            <button class="btn" id="dict-meaning-go">按含义搜词</button>
+          </div>
+        </div>
+        <div id="dict-themes" class="dict-themes"></div>
+        <div class="side-title hidden" id="dict-list-title"></div>
+        <div class="dict-word-list" id="dict-list"></div>
+      </div>
+    </section>
+
+    <!-- ---------- 设置 ---------- -->
+    <section id="page-settings" class="page">
+      <div class="settings-grid">
+        <div class="panel">
+          <div class="panel-head"><div class="ph-left"><h2>AI 接口（OpenAI 兼容）</h2></div></div>
+          <div class="form">
+            <label>Base URL<input type="text" id="set-base-url" placeholder="https://api.openai.com/v1"></label>
+            <label>API Key<input type="password" id="set-api-key" placeholder="sk-..."></label>
+            <label>模型名<input type="text" id="set-model" placeholder="gpt-4o-mini / deepseek-chat / moonshot-v1-8k"></label>
+            <div class="form-row">
+              <label>温度<input type="number" id="set-temperature" min="0" max="2" step="0.1"></label>
+              <label>输出上限 max_tokens<input type="number" id="set-max-tokens" min="500" max="32000" step="500"></label>
+            </div>
+            <div class="form-row">
+              <label>每次生成数量
+                <div class="form-subrow">
+                  听 <input type="number" id="set-n-listen" min="3" max="20">
+                  说 <input type="number" id="set-n-speak" min="3" max="20">
+                  读 <input type="number" id="set-n-read" min="1" max="8">
+                  写 <input type="number" id="set-n-write" min="3" max="20">
+                </div>
+              </label>
+            </div>
+            <div class="form-actions">
+              <button class="btn primary" id="set-test">测试连接</button>
+              <span class="form-msg" id="set-test-msg"></span>
+            </div>
+            <div class="hint">留空 API Key 则使用内置分层题库（小学 → 考研），随时可以切换。</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><div class="ph-left"><h2>朗读语音</h2></div></div>
+          <div class="form">
+            <label>语音引擎
+              <select id="set-tts-engine">
+                <option value="edge">微软 Edge 神经语音（在线·音质极佳·推荐）</option>
+                <option value="system">系统语音（离线可用）</option>
+                <option value="ai">AI 语音接口（需要 Key）</option>
+              </select>
+            </label>
+            <label>音色（一键切换）
+              <select id="set-voice-select"></select>
+            </label>
+            <button class="btn tiny" id="set-refresh-voices">🔄 刷新音色库（联网获取全部 322 款）</button>
+            <label>音调变声（调高变童声/卡通，调低变低沉）<input type="range" id="set-edge-pitch" min="-30" max="30" step="5"><span class="ctl-val" id="set-edge-pitch-val">0%</span></label>
+            <label>默认语速（0.5x ~ 3x）<input type="range" id="set-rate" min="0.5" max="3" step="0.05"><span class="ctl-val" id="set-rate-val"></span></label>
+            <div class="form-actions">
+              <button class="btn" id="set-edge-pitch-reset">恢复默认音调</button>
+              <button class="btn" id="set-voice-preview">▶ 试听这个音色</button>
+              <span class="form-msg" id="set-voice-msg"></span>
+            </div>
+            <div class="hint">精选推荐里有：Ana / 晓北东北话（幽默）/ 云夏·晓伊（卡通童声）/ Ava·Emma（感情丰富会聊天）。<br>音调调到 +20% 任何音色都能变"卡通童声"；超过 2 倍速部分用播放倍速补齐。</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><div class="ph-left"><h2>每日目标</h2></div></div>
+          <div class="form">
+            <div class="form-row">
+              <label>听力（分钟）<input type="number" id="set-goal-listen" min="1" max="240"></label>
+              <label>口语（次）<input type="number" id="set-goal-speak" min="1" max="300"></label>
+            </div>
+            <div class="form-row">
+              <label>阅读（分钟）<input type="number" id="set-goal-read" min="1" max="240"></label>
+              <label>写作（字符）<input type="number" id="set-goal-write" min="50" max="10000" step="50"></label>
+            </div>
+            <div class="hint">目标进度会显示在「总记录」页顶部。</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><div class="ph-left"><h2>数据管理</h2></div></div>
+          <div class="form">
+            <div class="form-actions">
+              <button class="btn" id="set-export-json">导出备份 (JSON)</button>
+              <button class="btn" id="set-import-json">导入备份</button>
+              <button class="btn" id="set-export-csv">导出记录 (CSV)</button>
+            </div>
+            <div class="form-actions">
+              <button class="btn danger" id="set-clear">清空所有训练数据</button>
+            </div>
+            <div class="hint" id="set-data-info"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div id="toast-wrap"></div>
+
+<!-- 生词收藏弹窗 -->
+<div class="wc-mask hidden" id="wc-mask">
+  <div class="wc-dialog">
+    <div class="wc-title">⭐ 收藏到生词本 <span class="wc-source" id="wc-source"></span></div>
+    <label>单词 / 短语
+      <input type="text" id="wc-word" spellcheck="false" autocomplete="off">
+    </label>
+    <label>中文释义（可修改）
+      <input type="text" id="wc-meaning" placeholder="配置 AI 后自动翻译" spellcheck="false">
+    </label>
+    <div class="wc-sentence-label">原句（自动带入）</div>
+    <div class="wc-sentence" id="wc-sentence"></div>
+    <div class="wc-sentence-zh hidden" id="wc-sentence-zh"></div>
+    <div class="wc-actions">
+      <button class="btn ghost tiny" id="wc-speak">🔊 读单词</button>
+      <span class="form-msg" id="wc-msg"></span>
+      <span class="wc-spacer"></span>
+      <button class="btn" id="wc-cancel">取消</button>
+      <button class="btn primary" id="wc-save">保存 ⭐</button>
+    </div>
+    <div class="hint">提示：在训练页双击任意英文单词即可快速弹出此窗口</div>
+  </div>
+</div>
+
+<script src="js/util.js"></script>
+<script src="js/corpus.js"></script>
+<script src="js/store.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/tts.js"></script>
+<script src="js/recorder.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/listen.js"></script>
+<script src="js/speak.js"></script>
+<script src="js/read.js"></script>
+<script src="js/write.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/library.js"></script>
+<script src="js/vocab.js"></script>
+<script src="js/phonics-data.js"></script>
+<script src="js/phonics.js"></script>
+<script src="js/dict-data.js"></script>
+<script src="js/dict.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
